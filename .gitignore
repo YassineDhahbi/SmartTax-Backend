@@ -1,0 +1,70 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### Logs ###
+arabsoft.log*
+*.log
+*.log.*
+*.tmp
+
+### Python (services locaux) ###
+**/.venv/
+**/__pycache__/
+**/*.pyc
+
+### Services ML / OCR (hors depot Git) ###
+face-verification-service/
+ocr-service/
+sentiment-service/
+
+### Configuration locale (secrets) ###
+src/main/resources/application.properties
+src/main/resources/application-docker.properties
+.env
+.env.*
+
+### Modele SWIN (trop volumineux pour Git) ###
+**/swin_cin_classifier.pt
+src/main/resources/models/
+
+### Uploaded media (shared local + Docker) ###
+uploads/**/*
+!uploads/**/.gitkeep
+src/main/resources/static/
+
+### Donnees d'entrainement locales ###
+UsersyassiDesktopStage ArabSoft/
+
+### Build / IDE (aligne .dockerignore) ###
+*.iml

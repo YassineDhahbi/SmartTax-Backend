@@ -1,0 +1,15 @@
+target/
+.git/
+.idea/
+*.iml
+arabsoft.log*
+face-verification-service/
+ocr-service/
+sentiment-service/
+**/.venv/
+**/__pycache__/
+**/*.pyc
+uploads/
+# Garder le modele SWIN pour la validation CIN dans l'image Docker
+!src/main/resources/models/
+!src/main/resources/models/**
