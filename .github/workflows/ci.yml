@@ -35,25 +35,28 @@ jobs:
           chmod +x mvnw
           ./mvnw -B verify
 
-      - name: Verify SonarCloud secrets
-        run: |
-          if [ -z "${{ secrets.SONAR_TOKEN }}" ]; then
-            echo "::error::Ajoutez le secret GitHub SONAR_TOKEN (SonarCloud > My Account > Security > Generate Token)"
-            exit 1
-          fi
-          if [ -z "${{ secrets.SONAR_ORGANIZATION }}" ]; then
-            echo "::error::Ajoutez le secret GitHub SONAR_ORGANIZATION (cle d organisation SonarCloud, ex: yassinedhahbi)"
-            exit 1
-          fi
-
       - name: SonarCloud analysis (Maven)
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           chmod +x mvnw
-          ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-            -Dsonar.organization="${{ secrets.SONAR_ORGANIZATION }}" \
-            -Dsonar.projectKey="${{ secrets.SONAR_ORGANIZATION }}_smarttax-backend" \
+          if [ -z "$SONAR_TOKEN" ]; then
+            echo "::error::Ajoutez le secret GitHub SONAR_TOKEN (SonarCloud > My Account > Security > Generate Token)"
+            exit 1
+          fi
+          ORG=$(printf '%s' "$SONAR_ORGANIZATION" | tr -d '[:space:]')
+          if [ -z "$ORG" ]; then
+            echo "::error::SONAR_ORGANIZATION est vide. Valeur attendue : yassinedhahbi (sans espaces ni retour ligne)"
+            exit 1
+          fi
+          if ! printf '%s' "$ORG" | grep -Eq '^[a-z0-9-]+$'; then
+            echo "::error::SONAR_ORGANIZATION invalide. Utilisez la Organization Key SonarCloud (ex: yassinedhahbi), pas le nom affiche."
+            exit 1
+          fi
+          ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.7.0.6970:sonar \
+            -Dsonar.organization="$ORG" \
+            -Dsonar.projectKey="${ORG}_smarttax-backend" \
             -Dsonar.projectName="SmartTax Backend" \
             -Dsonar.host.url=https://sonarcloud.io
