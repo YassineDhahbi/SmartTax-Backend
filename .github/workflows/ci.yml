@@ -31,7 +31,9 @@ jobs:
           cache: maven
 
       - name: Build and test
-        run: ./mvnw -B verify
+        run: |
+          chmod +x mvnw
+          ./mvnw -B verify
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v4
