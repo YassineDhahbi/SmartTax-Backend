@@ -35,10 +35,25 @@ jobs:
           chmod +x mvnw
           ./mvnw -B verify
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v4
+      - name: Verify SonarCloud secrets
+        run: |
+          if [ -z "${{ secrets.SONAR_TOKEN }}" ]; then
+            echo "::error::Ajoutez le secret GitHub SONAR_TOKEN (SonarCloud > My Account > Security > Generate Token)"
+            exit 1
+          fi
+          if [ -z "${{ secrets.SONAR_ORGANIZATION }}" ]; then
+            echo "::error::Ajoutez le secret GitHub SONAR_ORGANIZATION (cle d organisation SonarCloud, ex: yassinedhahbi)"
+            exit 1
+          fi
+
+      - name: SonarCloud analysis (Maven)
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          projectBaseDir: .
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x mvnw
+          ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.organization="${{ secrets.SONAR_ORGANIZATION }}" \
+            -Dsonar.projectKey="${{ secrets.SONAR_ORGANIZATION }}_smarttax-backend" \
+            -Dsonar.projectName="SmartTax Backend" \
+            -Dsonar.host.url=https://sonarcloud.io
